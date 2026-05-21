@@ -1,0 +1,131 @@
+# =========================================================
+# FRONTEND - ANGULAR
+# =========================================================
+
+# Dependencies
+Frontend/node_modules/
+
+# Angular build output
+Frontend/dist/
+Frontend/.angular/
+Frontend/out-tsc/
+
+# Cache
+Frontend/.cache/
+
+# Coverage
+Frontend/coverage/
+
+# Logs
+Frontend/npm-debug.log*
+Frontend/yarn-debug.log*
+Frontend/yarn-error.log*
+Frontend/pnpm-debug.log*
+
+# Environment files
+Frontend/src/environments/*.local.ts
+
+# IDEs
+Frontend/.idea/
+Frontend/.vscode/
+
+# System files
+Frontend/.DS_Store
+Frontend/Thumbs.db
+
+
+# =========================================================
+# BACKEND - .NET / ASP.NET CORE
+# =========================================================
+
+# Build folders
+Backend/**/bin/
+Backend/**/obj/
+
+# Publish
+Backend/publish/
+Backend/**/publish/
+
+# User-specific files
+*.rsuser
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Logs
+*.log
+
+# Test Results
+TestResults/
+*.trx
+
+# IIS Express
+iisexpress/
+
+# Entity Framework / Local DB
+*.mdf
+*.ldf
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# dotCover
+*.dotCover
+
+# Azure Publish
+*.azurePubxml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+
+# =========================================================
+# APP SETTINGS / SECRETS
+# =========================================================
+
+# Local settings
+Backend/**/appsettings.Development.json
+Backend/**/appsettings.Local.json
+
+# Secrets
+secrets.json
+*.secret.json
+
+# Environment variables
+.env
+.env.*
+
+
+# =========================================================
+# GENERAL TEMP FILES
+# =========================================================
+
+*.tmp
+*.temp
+*.cache
+
+
+# =========================================================
+# OS FILES
+# =========================================================
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
