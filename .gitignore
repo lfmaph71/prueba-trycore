@@ -3,36 +3,36 @@
 # =========================================================
 
 # Dependencies
-Frontend/evm-dashboard/node_modules/
+Frontend/node_modules/
 
 # Angular build output
-Frontend/evm-dashboard/dist/
-Frontend/evm-dashboard/.angular/
-Frontend/evm-dashboard/out-tsc/
+Frontend/dist/
+Frontend/.angular/
+Frontend/out-tsc/
 
 # Cache
-Frontend/evm-dashboard/.cache/
+Frontend/.cache/
 
 # Coverage
-Frontend/evm-dashboard/coverage/
+Frontend/coverage/
 
 # Logs
-Frontend/evm-dashboard/npm-debug.log*
-Frontend/evm-dashboard/yarn-debug.log*
-Frontend/evm-dashboard/yarn-error.log*
-Frontend/evm-dashboard/pnpm-debug.log*
+Frontend/npm-debug.log*
+Frontend/yarn-debug.log*
+Frontend/yarn-error.log*
+Frontend/pnpm-debug.log*
 
 # Environment files
-Frontend/evm-dashboard/src/environments/*.local.ts
+Frontend/src/environments/*.local.ts
 
 # IDEs
-Frontend/evm-dashboard/.idea/
-Frontend/evm-dashboard/.vscode/
-Frontend/evm-dashboard/.vscode/
+Frontend/.idea/
+Frontend/.vscode/
+Frontend/.vscode/
 
 # System files
-Frontend/evm-dashboard/.DS_Store
-Frontend/evm-dashboard/Thumbs.db
+Frontend/.DS_Store
+Frontend/Thumbs.db
 
 
 # =========================================================
