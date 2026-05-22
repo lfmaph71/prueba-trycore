@@ -129,3 +129,5 @@ secrets.json
 Thumbs.db
 Desktop.ini
 ehthumbs.db
+/.github/copilot-instructions.md
+/Backend/EVM.API/.github/copilot-instructions.md
