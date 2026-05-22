@@ -8,7 +8,7 @@ import { Activity } from '../../../core/models/activity.model';
 @Component({
   selector: 'app-activity-table',
   standalone: true,
-  imports: [CommonModule, CurrencyFormatPipe, PercentFormatPipe, EvmStatusBadgeComponent],
+imports: [CommonModule, CurrencyFormatPipe, EvmStatusBadgeComponent],
   template: `
     <div class="activities-section">
       <div class="section-header">
