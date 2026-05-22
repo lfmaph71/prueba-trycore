@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ProjectService } from '../../core/services/project.service';
 import { ActivityService } from '../../core/services/activity.service';
 import { Project } from '../../core/models/project.model';
@@ -13,6 +14,7 @@ import { ActivityFormComponent } from '../activities/activity-form/activity-form
 import { EvmSummaryComponent } from '../evm-analysis/evm-summary/evm-summary.component';
 import { PvEvAcChartComponent } from '../evm-analysis/pv-ev-ac-chart/pv-ev-ac-chart.component';
 import { CpiSpiGaugeComponent } from '../evm-analysis/cpi-spi-gauge/cpi-spi-gauge.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,6 +39,11 @@ import { CpiSpiGaugeComponent } from '../evm-analysis/cpi-spi-gauge/cpi-spi-gaug
         [visible]="true"
         (closed)="error = ''"
       ></app-error-alert>
+
+      <!-- Debug info -->
+      <div *ngIf="debugInfo" style="background:#f0f0f0;padding:10px;margin-bottom:10px;border-radius:4px;font-size:12px;font-family:monospace;white-space:pre-wrap;">
+        {{ debugInfo }}
+      </div>
 
       <!-- Modal Crear Proyecto -->
       <div *ngIf="showCreateProjectForm" class="modal-overlay">
@@ -77,14 +84,14 @@ import { CpiSpiGaugeComponent } from '../evm-analysis/cpi-spi-gauge/cpi-spi-gaug
 
         <!-- Sección 2: Indicadores EVM Consolidados -->
         <app-evm-summary
-          *ngIf="selectedProject?.evmSummary !== undefined && selectedProject?.evmSummary !== null"
+          *ngIf="selectedProject?.evmSummary != null"
           [indicators]="selectedProject?.evmSummary ?? null"
         ></app-evm-summary>
 
         <!-- Sección 3: Tabla de Actividades -->
         <app-activity-table
           *ngIf="selectedProject"
-          [activities]="selectedProject.activities || []"
+          [activities]="activities"
           (newActivity)="showCreateActivityFormModal()"
           (editActivity)="onEditActivity($event)"
           (deleteActivity)="onDeleteActivity($event)"
@@ -92,13 +99,13 @@ import { CpiSpiGaugeComponent } from '../evm-analysis/cpi-spi-gauge/cpi-spi-gaug
 
         <!-- Sección 4: Gráfico PV vs EV vs AC -->
         <app-pv-ev-ac-chart
-          *ngIf="selectedProject?.activities && selectedProject?.activities?.length ?? 0 > 0"
-          [activities]="selectedProject?.activities ?? []"
+          *ngIf="activities.length > 0"
+          [activities]="activities"
         ></app-pv-ev-ac-chart>
 
         <!-- Sección 5: Gauge CPI/SPI -->
         <app-cpi-spi-gauge
-          *ngIf="selectedProject?.evmSummary"
+          *ngIf="selectedProject?.evmSummary != null"
           [indicators]="selectedProject?.evmSummary ?? null"
         ></app-cpi-spi-gauge>
       </div>
@@ -159,19 +166,42 @@ import { CpiSpiGaugeComponent } from '../evm-analysis/cpi-spi-gauge/cpi-spi-gaug
 export class DashboardComponent implements OnInit {
   projects: Project[] = [];
   selectedProject: Project | null = null;
+  activities: Activity[] = [];
   showCreateProjectForm = false;
   showCreateActivityForm = false;
   editingActivity: Activity | null = null;
   loading = true;
   error = '';
+  debugInfo = '';
 
   constructor(
     private projectService: ProjectService,
-    private activityService: ActivityService
+    private activityService: ActivityService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    this.loadProjects();
+    this.debugInfo = 'Inicializando...\nAPI URL: ' + environment.apiUrl;
+    this.testConnection();
+  }
+
+  private testConnection(): void {
+    this.http.get(environment.apiUrl + '/projects').subscribe({
+      next: (data: any) => {
+        this.debugInfo += '\n✅ Conexión exitosa a la API';
+        this.debugInfo += '\nDatos recibidos: ' + JSON.stringify(data).substring(0, 300) + '...';
+        this.projects = data;
+        if (data.length > 0) {
+          this.onSelectProject(data[0]);
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        this.debugInfo += '\n❌ Error de conexión: ' + JSON.stringify(err);
+        this.error = 'Error al cargar proyectos. Ver consola (F12) para detalles.';
+        this.loading = false;
+      }
+    });
   }
 
   private loadProjects(): void {
@@ -193,6 +223,18 @@ export class DashboardComponent implements OnInit {
 
   onSelectProject(project: Project): void {
     this.selectedProject = project;
+    this.loadActivities(project.id);
+  }
+
+  private loadActivities(projectId: number): void {
+    this.activityService.getActivitiesByProjectId(projectId).subscribe({
+      next: (activities) => {
+        this.activities = activities;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar actividades: ' + err.message;
+      }
+    });
   }
 
   showCreateProjectFormModal(): void {
@@ -244,11 +286,7 @@ export class DashboardComponent implements OnInit {
         next: () => {
           this.showCreateActivityForm = false;
           this.editingActivity = null;
-          this.projectService.getProjectById(this.selectedProject!.id).subscribe({
-            next: (project) => {
-              this.selectedProject = project;
-            }
-          });
+          this.loadActivities(this.selectedProject!.id);
         },
         error: (err) => {
           this.error = 'Error al actualizar actividad: ' + err.message;
@@ -258,11 +296,7 @@ export class DashboardComponent implements OnInit {
       this.activityService.createActivity(this.selectedProject.id, activityData).subscribe({
         next: () => {
           this.showCreateActivityForm = false;
-          this.projectService.getProjectById(this.selectedProject!.id).subscribe({
-            next: (project) => {
-              this.selectedProject = project;
-            }
-          });
+          this.loadActivities(this.selectedProject!.id);
         },
         error: (err) => {
           this.error = 'Error al crear actividad: ' + err.message;
@@ -275,11 +309,7 @@ export class DashboardComponent implements OnInit {
     this.activityService.deleteActivity(id).subscribe({
       next: () => {
         if (this.selectedProject) {
-          this.projectService.getProjectById(this.selectedProject.id).subscribe({
-            next: (project) => {
-              this.selectedProject = project;
-            }
-          });
+          this.loadActivities(this.selectedProject.id);
         }
       },
       error: (err) => {
