@@ -86,3 +86,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+// Make Program public for integration tests
+public partial class Program { }
