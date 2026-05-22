@@ -3,35 +3,36 @@
 # =========================================================
 
 # Dependencies
-Frontend/node_modules/
+Frontend/evm-dashboard/node_modules/
 
 # Angular build output
-Frontend/dist/
-Frontend/.angular/
-Frontend/out-tsc/
+Frontend/evm-dashboard/dist/
+Frontend/evm-dashboard/.angular/
+Frontend/evm-dashboard/out-tsc/
 
 # Cache
-Frontend/.cache/
+Frontend/evm-dashboard/.cache/
 
 # Coverage
-Frontend/coverage/
+Frontend/evm-dashboard/coverage/
 
 # Logs
-Frontend/npm-debug.log*
-Frontend/yarn-debug.log*
-Frontend/yarn-error.log*
-Frontend/pnpm-debug.log*
+Frontend/evm-dashboard/npm-debug.log*
+Frontend/evm-dashboard/yarn-debug.log*
+Frontend/evm-dashboard/yarn-error.log*
+Frontend/evm-dashboard/pnpm-debug.log*
 
 # Environment files
-Frontend/src/environments/*.local.ts
+Frontend/evm-dashboard/src/environments/*.local.ts
 
 # IDEs
-Frontend/.idea/
-Frontend/.vscode/
+Frontend/evm-dashboard/.idea/
+Frontend/evm-dashboard/.vscode/
+Frontend/evm-dashboard/.vscode/
 
 # System files
-Frontend/.DS_Store
-Frontend/Thumbs.db
+Frontend/evm-dashboard/.DS_Store
+Frontend/evm-dashboard/Thumbs.db
 
 
 # =========================================================
@@ -129,3 +130,5 @@ secrets.json
 Thumbs.db
 Desktop.ini
 ehthumbs.db
+/Backend/EVM.API/.github
+/.github/copilot-instructions.md
