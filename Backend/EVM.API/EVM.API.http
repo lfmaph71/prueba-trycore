@@ -1,0 +1,73 @@
+@EVM.API_HostAddress = http://localhost:5013
+
+### =========================================================
+### PROJECTS
+### =========================================================
+
+### List all projects
+GET {{EVM.API_HostAddress}}/api/projects
+Accept: application/json
+
+### Get project by ID (with consolidated EVM indicators)
+GET {{EVM.API_HostAddress}}/api/projects/1
+Accept: application/json
+
+### Create a new project
+POST {{EVM.API_HostAddress}}/api/projects
+Content-Type: application/json
+
+{
+  "name": "Nuevo Proyecto de Prueba",
+  "description": "Descripción del proyecto de prueba"
+}
+
+### Update an existing project
+PUT {{EVM.API_HostAddress}}/api/projects/1
+Content-Type: application/json
+
+{
+  "name": "Proyecto Actualizado",
+  "description": "Descripción actualizada del proyecto"
+}
+
+### Delete a project
+DELETE {{EVM.API_HostAddress}}/api/projects/1
+
+### =========================================================
+### ACTIVITIES
+### =========================================================
+
+### List activities by project ID (with EVM indicators)
+GET {{EVM.API_HostAddress}}/api/projects/1/activities
+Accept: application/json
+
+### Get activity by ID
+GET {{EVM.API_HostAddress}}/api/activities/1
+Accept: application/json
+
+### Create a new activity for project 1
+POST {{EVM.API_HostAddress}}/api/projects/1/activities
+Content-Type: application/json
+
+{
+  "name": "Diseño de Base de Datos",
+  "bac": 30000.00,
+  "plannedPercent": 50.00,
+  "actualPercent": 60.00,
+  "actualCost": 18000.00
+}
+
+### Update an existing activity
+PUT {{EVM.API_HostAddress}}/api/activities/1
+Content-Type: application/json
+
+{
+  "name": "Diseño de Base de Datos Actualizado",
+  "bac": 35000.00,
+  "plannedPercent": 60.00,
+  "actualPercent": 70.00,
+  "actualCost": 20000.00
+}
+
+### Delete an activity
+DELETE {{EVM.API_HostAddress}}/api/activities/1
