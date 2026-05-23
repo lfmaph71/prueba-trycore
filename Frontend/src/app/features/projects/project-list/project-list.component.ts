@@ -1,17 +1,19 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
-import { EvmStatusBadgeComponent } from '../../../shared/components/evm-status-badge/evm-status-badge.component';
 import { Project } from '../../../core/models/project.model';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [CommonModule, CurrencyFormatPipe, EvmStatusBadgeComponent],
+  imports: [CommonModule, CurrencyFormatPipe],
   template: `
     <div class="projects-section">
       <div class="section-header">
-        <h2>Proyectos</h2>
+        <div>
+          <h2>Proyectos</h2>
+          <p class="section-description">Selecciona un proyecto para ver su análisis y abre la gestión de actividades cuando la necesites.</p>
+        </div>
         <button class="btn btn-primary" (click)="onNewProject()">+ Nuevo Proyecto</button>
       </div>
 
@@ -40,6 +42,7 @@ import { Project } from '../../../core/models/project.model';
               <td>{{ project.evmSummary?.schedulePerformanceIndex?.toFixed(2) || '-' }}</td>
               <td class="actions">
                 <button class="btn-small btn-info" (click)="onSelectProject(project)">Ver</button>
+                <button class="btn-small btn-secondary" (click)="onOpenActivities(project)">Actividades</button>
                 <button class="btn-small btn-danger" (click)="onDeleteProject(project.id)">Eliminar</button>
               </td>
             </tr>
@@ -52,31 +55,38 @@ import { Project } from '../../../core/models/project.model';
     .projects-section {
       background: white;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     }
     .section-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 16px;
       margin-bottom: 20px;
     }
     .section-header h2 {
       margin: 0;
-      color: #2c3e50;
+      color: #0f172a;
+    }
+    .section-description {
+      margin: 6px 0 0;
+      color: #64748b;
+      font-size: 14px;
     }
     .btn-primary {
       background-color: #27ae60;
       color: white;
-      padding: 8px 16px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: 700;
     }
     .empty-state {
       text-align: center;
       padding: 40px;
-      color: #999;
+      color: #94a3b8;
     }
     .projects-table {
       overflow-x: auto;
@@ -88,33 +98,39 @@ import { Project } from '../../../core/models/project.model';
     th, td {
       padding: 12px;
       text-align: left;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e2e8f0;
     }
     th {
-      background-color: #f5f5f5;
-      font-weight: 600;
-      color: #333;
+      background-color: #f8fafc;
+      font-weight: 700;
+      color: #334155;
     }
     tr:hover {
-      background-color: #fafafa;
+      background-color: #f8fafc;
     }
     .actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
     .btn-small {
-      padding: 4px 8px;
+      padding: 6px 10px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
+      font-weight: 700;
     }
     .btn-info {
-      background-color: #3498db;
+      background-color: #0ea5e9;
       color: white;
     }
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #0f172a;
+    }
     .btn-danger {
-      background-color: #e74c3c;
+      background-color: #ef4444;
       color: white;
     }
   `]
@@ -123,6 +139,7 @@ export class ProjectListComponent {
   @Input() projects: Project[] = [];
   @Output() newProject = new EventEmitter<void>();
   @Output() selectProject = new EventEmitter<Project>();
+  @Output() openActivities = new EventEmitter<Project>();
   @Output() deleteProject = new EventEmitter<number>();
 
   onNewProject(): void {
@@ -131,6 +148,10 @@ export class ProjectListComponent {
 
   onSelectProject(project: Project): void {
     this.selectProject.emit(project);
+  }
+
+  onOpenActivities(project: Project): void {
+    this.openActivities.emit(project);
   }
 
   onDeleteProject(id: number): void {

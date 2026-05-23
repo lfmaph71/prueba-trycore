@@ -74,36 +74,48 @@ import { environment } from '../../../environments/environment';
 
       <!-- Contenido Principal -->
       <div *ngIf="!loading" class="dashboard-content">
-        <!-- Sección 1: Proyectos -->
         <app-project-list
           [projects]="projects"
           (newProject)="showCreateProjectFormModal()"
           (selectProject)="onSelectProject($event)"
+          (openActivities)="openProjectActivities($event)"
           (deleteProject)="onDeleteProject($event)"
         ></app-project-list>
 
-        <!-- Sección 2: Indicadores EVM Consolidados -->
+        <div *ngIf="selectedProject" class="project-insight-card">
+          <div>
+            <p class="eyebrow">Proyecto activo</p>
+            <h1 class="project-title">{{ selectedProject.name }}</h1>
+            <p class="project-description">{{ selectedProject.description || 'Sin descripción' }}</p>
+          </div>
+          <div class="project-status-pill" [ngClass]="getProjectStatusClass()">
+            {{ getProjectStatusLabel() }}
+          </div>
+        </div>
+
         <app-evm-summary
           *ngIf="selectedProject?.evmSummary != null"
           [indicators]="selectedProject?.evmSummary ?? null"
         ></app-evm-summary>
 
-        <!-- Sección 3: Tabla de Actividades -->
+        <div *ngIf="selectedProject && !showActivitiesPanel" class="analysis-hint-card">
+          <h2>Gestión de actividades</h2>
+          <p>Haz clic en <strong>Actividades</strong> del proyecto para ver y editar sus actividades, y analizar el desempeño en tiempo real.</p>
+        </div>
+
         <app-activity-table
-          *ngIf="selectedProject"
+          *ngIf="selectedProject && showActivitiesPanel"
           [activities]="activities"
           (newActivity)="showCreateActivityFormModal()"
           (editActivity)="onEditActivity($event)"
           (deleteActivity)="onDeleteActivity($event)"
         ></app-activity-table>
 
-        <!-- Sección 4: Gráfico PV vs EV vs AC -->
         <app-pv-ev-ac-chart
           *ngIf="activities.length > 0"
           [activities]="activities"
         ></app-pv-ev-ac-chart>
 
-        <!-- Sección 5: Gauge CPI/SPI -->
         <app-cpi-spi-gauge
           *ngIf="selectedProject?.evmSummary != null"
           [indicators]="selectedProject?.evmSummary ?? null"
@@ -127,6 +139,68 @@ import { environment } from '../../../environments/environment';
       display: flex;
       flex-direction: column;
       gap: 20px;
+    }
+    .project-insight-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+      border-radius: 16px;
+      padding: 24px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      box-shadow: 0 18px 40px rgba(29, 78, 216, 0.18);
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    .project-title {
+      margin: 0;
+      font-size: 28px;
+    }
+    .project-description {
+      margin: 10px 0 0;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .project-status-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .status-good {
+      background: rgba(34, 197, 94, 0.2);
+      color: #dcfce7;
+    }
+    .status-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fef3c7;
+    }
+    .status-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fee2e2;
+    }
+    .analysis-hint-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+    .analysis-hint-card h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .analysis-hint-card p {
+      margin: 0;
+      color: #475569;
     }
     .modal-overlay {
       position: fixed;
@@ -169,7 +243,18 @@ export class DashboardComponent implements OnInit {
   activities: Activity[] = [];
   showCreateProjectForm = false;
   showCreateActivityForm = false;
+  showActivitiesPanel = false;
   editingActivity: Activity | null = null;
+  
+    openProjectActivities(project: Project): void {
+      this.selectedProject = project;
+      this.showCreateActivityForm = false;
+      this.editingActivity = null;
+      this.showActivitiesPanel = true;
+      this.loadActivities(project.id);
+    }
+
+
   loading = true;
   error = '';
   debugInfo = '';
@@ -223,8 +308,16 @@ export class DashboardComponent implements OnInit {
 
   onSelectProject(project: Project): void {
     this.selectedProject = project;
+    this.showCreateActivityForm = false;
+    this.editingActivity = null;
+    this.showActivitiesPanel = false;
     this.loadActivities(project.id);
   }
+
+  //openProjectActivities(project: Project): void {
+  //  this.onSelectProject(project);
+  //  this.showActivitiesPanel = true;
+  //}
 
   private loadActivities(projectId: number): void {
     this.activityService.getActivitiesByProjectId(projectId).subscribe({
@@ -235,6 +328,36 @@ export class DashboardComponent implements OnInit {
         this.error = 'Error al cargar actividades: ' + err.message;
       }
     });
+  }
+
+  getProjectStatusLabel(): string {
+    const cpi = this.selectedProject?.evmSummary?.costPerformanceIndex ?? 1;
+    const spi = this.selectedProject?.evmSummary?.schedulePerformanceIndex ?? 1;
+
+    if (cpi >= 1 && spi >= 1) {
+      return 'Proyecto en buen estado';
+    }
+
+    if (cpi >= 0.9 || spi >= 0.9) {
+      return 'Atención moderada';
+    }
+
+    return 'Proyecto en riesgo';
+  }
+
+  getProjectStatusClass(): string {
+    const cpi = this.selectedProject?.evmSummary?.costPerformanceIndex ?? 1;
+    const spi = this.selectedProject?.evmSummary?.schedulePerformanceIndex ?? 1;
+
+    if (cpi >= 1 && spi >= 1) {
+      return 'status-good';
+    }
+
+    if (cpi >= 0.9 || spi >= 0.9) {
+      return 'status-warning';
+    }
+
+    return 'status-danger';
   }
 
   showCreateProjectFormModal(): void {
