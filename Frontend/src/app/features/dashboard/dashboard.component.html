@@ -1,0 +1,112 @@
+    <div class="dashboard-container">
+      @if (error) {
+        <app-error-alert
+          [message]="error"
+          [visible]="true"
+          (closed)="error = ''"
+        ></app-error-alert>        
+      }
+
+
+      <!-- Debug info -->
+      @if (debugInfo) {
+        <div style="background:#f0f0f0;padding:10px;margin-bottom:10px;border-radius:4px;font-size:12px;font-family:monospace;white-space:pre-wrap;">
+          {{ debugInfo }}
+        </div>
+      }
+
+      @if (showCreateProjectForm) {
+        <!-- Modal Crear Proyecto -->
+        <div class="modal-overlay">
+          <div class="modal-content">
+            <button class="modal-close" (click)="cancelCreateProject()">✕</button>
+            <app-project-form
+              (projectCreated)="onProjectCreated($event)"
+              (cancelled)="cancelCreateProject()"
+            ></app-project-form>
+          </div>
+        </div>
+      }
+
+      @if (showCreateActivityForm) {
+         <!-- Modal Crear/Editar Actividad -->
+        <div class="modal-overlay">
+          <div class="modal-content">
+            <button class="modal-close" (click)="cancelCreateActivity()">✕</button>
+            <app-activity-form
+              [editingActivity]="editingActivity"
+              (activityCreated)="onActivityCreated($event)"
+              (cancelled)="cancelCreateActivity()"
+            ></app-activity-form>
+          </div>
+        </div>
+      }
+
+      @if (loading) {
+        <div class="loading-overlay">
+          <app-loading-spinner></app-loading-spinner>
+        </div>        
+      }
+
+      @if (!loading) {
+        <!-- Contenido Principal -->
+        <div class="dashboard-content">
+          <app-project-list
+            [projects]="projects"
+            (newProject)="showCreateProjectFormModal()"
+            (selectProject)="onSelectProject($event)"
+            (openActivities)="openProjectActivities($event)"
+            (deleteProject)="onDeleteProject($event)"
+          ></app-project-list>
+        </div>        
+      }
+
+
+      @if (selectedProject) {
+        <div class="project-insight-card">
+          <div>
+            <p class="eyebrow">Proyecto activo</p>
+            <h1 class="project-title">{{ selectedProject.name }}</h1>
+            <p class="project-description">{{ selectedProject.description || 'Sin descripción' }}</p>
+          </div>
+          <div class="project-status-pill" [ngClass]="getProjectStatusClass()">
+            {{ getProjectStatusLabel() }}
+          </div>
+        </div>        
+      }
+
+      @if(selectedProject?.evmSummary != null){
+        <app-evm-summary
+          [indicators]="selectedProject?.evmSummary ?? null"
+        ></app-evm-summary>
+      }
+
+      @if(selectedProject && !showActivitiesPanel){
+        <div class="analysis-hint-card">
+          <h2>Gestión de actividades</h2>
+          <p>Haz clic en <strong>Actividades</strong> del proyecto para ver y editar sus actividades, y analizar el desempeño en tiempo real.</p>
+        </div>
+      }  
+
+      @if(selectedProject && showActivitiesPanel){
+        <app-activity-table
+          [activities]="activities"
+          (newActivity)="showCreateActivityFormModal()"
+          (editActivity)="onEditActivity($event)"
+          (deleteActivity)="onDeleteActivity($event)"
+        ></app-activity-table>
+      }  
+
+      @if(activities.length > 0){
+        <app-pv-ev-ac-chart
+          [activities]="activities"
+        ></app-pv-ev-ac-chart>
+      }
+
+      @if(selectedProject?.evmSummary != null){
+        <app-cpi-spi-gauge
+          [indicators]="selectedProject?.evmSummary ?? null"
+        ></app-cpi-spi-gauge>
+      }
+    </div>
+    

@@ -45,15 +45,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp", policy =>
     {
         policy.WithOrigins("http://localhost:4200")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+			  .AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
 
 // Apply middleware
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure Swagger
 app.UseSwagger();

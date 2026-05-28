@@ -6,10 +6,7 @@ import { HeaderComponent } from './features/layout/header/header.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, HeaderComponent],
-  template: `
-    <app-header></app-header>
-    <router-outlet></router-outlet>
-  `,
+  templateUrl: `./app.html`,
   styles: [`
     :host {
       display: block;
