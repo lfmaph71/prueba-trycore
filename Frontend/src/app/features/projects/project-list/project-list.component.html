@@ -1,0 +1,48 @@
+    <div class="projects-section">
+      <div class="section-header">
+        <div>
+          <h2>Proyectos</h2>
+          <p class="section-description">Selecciona un proyecto para ver su análisis y abre la gestión de actividades cuando la necesites.</p>
+        </div>
+        <button class="btn btn-primary" (click)="onNewProject()">+ Nuevo Proyecto</button>
+      </div>
+
+      <div *ngIf="projects.length === 0" class="empty-state">
+        <p>No hay proyectos. ¡Crea uno para comenzar!</p>
+      </div>
+
+      <div *ngIf="projects.length > 0" class="projects-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>EV Consolidado</th>
+              <th>CPI</th>
+              <th>SPI</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of projects">
+              <td>{{ project.name }}</td>
+              <td>{{ project.description || '-' }}</td>
+              <td>{{ project.evmSummary?.earnedValue | currencyFormat }}</td>
+              <td>{{ project.evmSummary?.costPerformanceIndex?.toFixed(2) || '-' }}</td>
+              <td>{{ project.evmSummary?.schedulePerformanceIndex?.toFixed(2) || '-' }}</td>
+              <td class="actions">
+                <button class="btn-small btn-info" (click)="onSelectProject(project)">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn-small btn-secondary" (click)="onOpenActivities(project)">
+                  <i class="bi bi-file-earmark-text"></i>
+                </button>
+                <button class="btn-small btn-danger" (click)="onDeleteProject(project.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>

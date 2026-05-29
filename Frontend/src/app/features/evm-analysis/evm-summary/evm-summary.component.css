@@ -1,0 +1,31 @@
+    .evm-summary {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .interpretation-section {
+      display: flex;
+      gap: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .interpretation-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .interpretation-item label {
+      font-weight: 600;
+      color: #333;
+    }

@@ -1,0 +1,69 @@
+    <div class="evm-summary">
+      <h2>Indicadores EVM Consolidados</h2>
+      <div class="metrics-grid">
+        <app-metric-card
+          title="PV (Valor Planeado)"
+          [value]="indicators?.plannedValue | currencyFormat"
+          label="Trabajo planeado"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="EV (Valor Ganado)"
+          [value]="indicators?.earnedValue | currencyFormat"
+          label="Trabajo completado"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="AC (Costo Real)"
+          [value]="indicators?.actualCost | currencyFormat"
+          label="Dinero gastado"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="CV (Varianza de Costo)"
+          [value]="indicators?.costVariance | currencyFormat"
+          label="Diferencia EV-AC"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="SV (Varianza de Cronograma)"
+          [value]="indicators?.scheduleVariance | currencyFormat"
+          label="Diferencia EV-PV"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="CPI (Índice de Desempeño de Costo)"
+          [value]="(indicators?.costPerformanceIndex || 0).toFixed(2)"
+          label="Eficiencia de costos"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="SPI (Índice de Desempeño de Cronograma)"
+          [value]="(indicators?.schedulePerformanceIndex || 0).toFixed(2)"
+          label="Eficiencia de cronograma"
+        ></app-metric-card>
+
+        <app-metric-card
+          title="EAC (Estimación al Terminar)"
+          [value]="indicators?.estimateAtCompletion | currencyFormat"
+          label="Costo final estimado"
+        ></app-metric-card>
+      </div>
+
+      <div class="interpretation-section" *ngIf="indicators">
+        <div class="interpretation-item">
+          <label>Estado de Costos:</label>
+          <app-evm-status-badge 
+            [interpretation]="indicators?.cpiInterpretation || ''"
+            [value]="indicators?.costPerformanceIndex || 1"
+          ></app-evm-status-badge>
+        </div>
+        <div class="interpretation-item">
+          <label>Estado de Cronograma:</label>
+          <app-evm-status-badge 
+            [interpretation]="indicators?.spiInterpretation || ''"
+            [value]="indicators?.schedulePerformanceIndex || 1"
+          ></app-evm-status-badge>
+        </div>
+      </div>
+    </div>

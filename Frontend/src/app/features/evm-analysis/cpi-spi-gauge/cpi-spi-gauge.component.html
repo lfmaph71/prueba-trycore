@@ -1,0 +1,28 @@
+    <div class="gauge-container">
+      <h3>Indicadores de Salud: CPI y SPI</h3>
+      <div class="gauges-wrapper">
+        <div class="gauge">
+          <h4>CPI (Desempeño de Costos)</h4>
+          <canvas
+            baseChart
+            [data]="cpiChartData"
+            [options]="gaugeOptions"
+            type="doughnut"
+          ></canvas>
+          <p class="gauge-value">{{ (indicators?.costPerformanceIndex || 0).toFixed(2) }}</p>
+          <p class="gauge-label">{{ indicators?.cpiInterpretation || '' }}</p>
+        </div>
+
+        <div class="gauge">
+          <h4>SPI (Desempeño de Cronograma)</h4>
+          <canvas
+            baseChart
+            [data]="spiChartData"
+            [options]="gaugeOptions"
+            type="doughnut"
+          ></canvas>
+          <p class="gauge-value">{{ (indicators?.schedulePerformanceIndex || 0).toFixed(2) }}</p>
+          <p class="gauge-label">{{ indicators?.spiInterpretation || '' }}</p>
+        </div>
+      </div>
+    </div>

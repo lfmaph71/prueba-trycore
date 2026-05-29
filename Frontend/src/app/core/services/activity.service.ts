@@ -13,6 +13,7 @@ export class ActivityService {
   constructor(private apiService: EvmApiService) {}
 
   getActivitiesByProjectId(projectId: number): Observable<Activity[]> {
+    let cadena: string = `/projects/${projectId}/activities`;
     return this.apiService.get<Activity[]>(`/projects/${projectId}/activities`).pipe(
       tap(activities => this.activities$.next(activities))
     );

@@ -1,0 +1,60 @@
+    <div class="activities-section">
+      <div class="section-header">
+        <h2>Actividades</h2>
+        <button class="btn btn-primary" (click)="onNewActivity()">+ Nueva Actividad</button>
+      </div>
+
+      <div *ngIf="activities.length === 0" class="empty-state">
+        <p>No hay actividades. ¡Crea una para comenzar!</p>
+      </div>
+
+      <div *ngIf="activities.length > 0" class="activities-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>BAC</th>
+              <th>% Planeado</th>
+              <th>% Real</th>
+              <th>AC</th>
+              <th>PV</th>
+              <th>EV</th>
+              <th>CV</th>
+              <th>CPI</th>
+              <th>SPI</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of activities">
+              <td>{{ activity.name }}</td>
+              <td>{{ activity.bac | currencyFormat }}</td>
+              <td>{{ activity.plannedPercent }}%</td>
+              <td>{{ activity.actualPercent }}%</td>
+              <td>{{ activity.actualCost | currencyFormat }}</td>
+              <td>{{ activity.indicators?.plannedValue | currencyFormat }}</td>
+              <td>{{ activity.indicators?.earnedValue | currencyFormat }}</td>
+              <td [ngClass]="{'negative': (activity.indicators?.costVariance || 0) < 0}">
+                {{ activity.indicators?.costVariance | currencyFormat }}
+              </td>
+              <td>
+                <app-evm-status-badge 
+                  [interpretation]="activity.indicators?.cpiInterpretation || ''"
+                  [value]="activity.indicators?.costPerformanceIndex || 1"
+                ></app-evm-status-badge>
+              </td>
+              <td>
+                <app-evm-status-badge 
+                  [interpretation]="activity.indicators?.spiInterpretation || ''"
+                  [value]="activity.indicators?.schedulePerformanceIndex || 1"
+                ></app-evm-status-badge>
+              </td>
+              <td class="actions">
+                <button class="btn-small btn-info" (click)="onEditActivity(activity)">Editar</button>
+                <button class="btn-small btn-danger" (click)="onDeleteActivity(activity.id)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>

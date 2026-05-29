@@ -105,6 +105,7 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+    this.loading = false;
   }
 
   onSelectProject(project: Project): void {
@@ -124,6 +125,7 @@ export class DashboardComponent implements OnInit {
     this.activityService.getActivitiesByProjectId(projectId).subscribe({
       next: (activities) => {
         this.activities = activities;
+        this.loading = false;
       },
       error: (err) => {
         this.error = 'Error al cargar actividades: ' + err.message;
